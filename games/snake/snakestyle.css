@@ -1,13 +1,8 @@
 body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: radial-gradient(circle at center, #ff00cc, #3333ff, #000);
-  animation: bgShift 6s infinite alternate;
-  overflow: hidden;
+  margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;
+  font-family: Inter, system-ui, sans-serif;
+  background:linear-gradient(135deg,#0b0220,#120013 45%,#050007);
+  color:#f5f7ff;
 }
 
 @keyframes bgShift {
@@ -16,39 +11,23 @@ body {
   100% { background: radial-gradient(circle, #00ff00, #00ffff, #000); }
 }
 
-.title {
-  color: #fff;
-  text-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
-  font-size: 2em;
-  margin-bottom: 10px;
-  animation: glow 1s infinite alternate;
-}
+.title {margin:0 0 8px;font-size:1.9rem;font-weight:800;letter-spacing:.05em;background:linear-gradient(90deg,#7c3aed,#ff004d,#00f0ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
 
 @keyframes glow {
   from { text-shadow: 0 0 10px #ff00ff; }
   to { text-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff; }
 }
 
-.game-container {
-  border: 4px solid #fff;
-  box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff inset;
-  border-radius: 10px;
-  padding: 10px;
-}
+.game-container {padding:12px;border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(0,0,0,.8));box-shadow:0 20px 60px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08);}
 
-#gameCanvas {
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 20px #00ffff;
-  border-radius: 5px;
-}
+#gameCanvas {background:#000;display:block;border-radius:16px;box-shadow:0 0 0 3px rgba(124,58,237,.4),0 0 40px rgba(0,240,255,.3);}
 
-.info {
-  color: #fff;
-  margin-top: 10px;
-  font-size: 1.1em;
-  text-shadow: 0 0 10px #00ffff;
-  animation: pulse 1.5s infinite alternate;
-}
+.panel {margin-top:10px;display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:.9rem;}
+.info {opacity:.8;}
+.score {font-weight:700;letter-spacing:.08em;background:linear-gradient(90deg,#ff004d,#ff7a18);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.overlay {position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,0,20,.78);backdrop-filter:blur(8px);flex-direction:column;gap:16px;color:#fff;font-weight:800;font-size:2.4rem;}
+.overlay.show {display:flex;animation:fade .35s ease;}
+@keyframes fade {from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 
 @keyframes pulse {
   0% { opacity: 0.8; }

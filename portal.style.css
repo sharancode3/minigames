@@ -29,6 +29,7 @@ body{
   padding:32px 18px 48px;
   overflow-x:hidden;
   position:relative;
+  transition:background .6s ease;
 }
 
 .page-shell{width:100%;max-width:1260px;z-index:5;display:flex;flex-direction:column;gap:20px}
@@ -41,6 +42,8 @@ body{
 .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
 
 .header{width:100%;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px 24px;border-radius:18px;background:linear-gradient(135deg,rgba(21,7,18,.8),rgba(9,4,12,.8));border:1px solid rgba(255,255,255,.04);backdrop-filter:blur(12px);box-shadow:0 30px 80px rgba(3,0,5,.6)}
+.theme-toggle{padding:8px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;font-weight:600;cursor:pointer;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase}
+.theme-toggle:hover{background:linear-gradient(135deg,var(--accent-4),var(--accent-3));color:#050007}
 .brand{display:flex;gap:14px;align-items:center}
 .logo-mark{width:64px;height:64px;border-radius:18px;background:conic-gradient(from 110deg,#ff004d,#ff7a18,#00f0ff,#ff004d);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#050007;box-shadow:0 15px 45px rgba(255,0,77,.45);animation:pulse 4s infinite ease-in-out}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
@@ -126,6 +129,40 @@ body{
 .btn:hover{transform:translateY(-2px)}
 .btn.close{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#050007}
 .btn.back{background:transparent;border:1px solid rgba(255,255,255,.12);color:#fff}
+
+/* FULLSCREEN GAME STAGE */
+.fs-game{position:fixed;inset:0;display:none;z-index:15000;background:radial-gradient(circle at 30% 30%,rgba(255,0,77,.25),transparent 60%),linear-gradient(180deg,#060007,#12020d);}
+.fs-game.active{display:block;}
+.fs-game .stage{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:40px;}
+.game-frame{flex:1 1 auto;max-width:1400px;height:85vh;border-radius:22px;overflow:hidden;box-shadow:0 40px 140px rgba(0,0,0,.85);background:#000;position:relative;border:1px solid rgba(255,255,255,.06);}
+.game-frame iframe{width:100%;height:100%;border:0;display:block;}
+.game-controls{position:absolute;top:50%;right:26px;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:10;}
+.gc-btn{padding:14px 18px;border-radius:16px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);backdrop-filter:blur(6px);color:#fff;font-weight:700;font-size:.85rem;cursor:pointer;letter-spacing:.05em;transition:background .3s,var(--ease);display:flex;align-items:center;gap:6px;}
+.gc-btn:hover{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#050007;}
+.gc-btn.exit{background:linear-gradient(135deg,#2e0024,#12000d);}
+.gc-btn.exit:hover{background:linear-gradient(135deg,var(--accent-3),var(--accent-4));color:#050007;}
+.pause-layer{position:absolute;inset:0;background:rgba(6,0,14,.75);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:24px;color:#fff;font-weight:800;font-size:2.4rem;}
+.pause-layer.show{display:flex;animation:fadeIn .4s ease forwards;}
+@keyframes fadeIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.hidden{display:none !important;}
+
+/* Remove congestion: legacy sections hidden if still present */
+.hero,.stats,.pillars,.launcher,.mini-player{display:none !important;}
+
+/* THEMES */
+.theme-ocean{--bg-1:#00121a;--bg-2:#001a24;--accent:#00b4ff;--accent-2:#29ffd8;--accent-3:#1460ff;--accent-4:#6fffff;--muted:#b9f6ff;}
+.theme-sunset{--bg-1:#1a0404;--bg-2:#3a0812;--accent:#ff4d00;--accent-2:#ff9a3c;--accent-3:#ff006a;--accent-4:#ffd54d;--muted:#ffc6b3;}
+.theme-forest{--bg-1:#02150c;--bg-2:#032012;--accent:#21c064;--accent-2:#49e68f;--accent-3:#0ba34a;--accent-4:#73ffb8;--muted:#bfffe1;}
+
+@media (max-width:1000px){
+  .game-frame{height:78vh;}
+  .game-controls{right:12px;}
+  .gc-btn{padding:12px 14px;font-size:.75rem;}
+}
+@media (max-width:640px){
+  .game-frame{height:72vh;}
+  .game-controls{flex-direction:row;top:auto;bottom:20px;transform:none;}
+}
 
 @media (max-width:900px){
   body{padding:24px 16px 40px}

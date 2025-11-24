@@ -7,11 +7,15 @@
   <link rel="stylesheet" href="snakestyle.css" />
 </head>
 <body>
-  <h1 class="title">🐍 Crazy Snake Game 🐍</h1>
+  <h1 class="title">🐍 Snake</h1>
   <div class="game-container">
-    <canvas id="gameCanvas" width="350" height="350"></canvas>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
   </div>
-  <div class="info">Use Arrow Keys to Move | Eat 🍎 to Grow | Don’t Hit the Walls!</div>
+  <div class="panel">
+    <div class="info">Arrow / WASD to move • P pause • R restart</div>
+    <div id="score" class="score">Score: 0</div>
+  </div>
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
 
   <script src="snakejava.js"></script>
 </body>

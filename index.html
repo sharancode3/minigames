@@ -28,103 +28,21 @@
           <a class="nav-link" href="about.html">About</a>
           <span id="username" class="username-pill"></span>
           <button id="logoutBtn" class="ghost-btn" title="Logout">Logout</button>
+          <button id="themeToggle" class="theme-toggle" title="Change Theme">Theme</button>
         </div>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">Independent Gaming Studio • Since 2020</p>
-          <h1>Launch premium mini-games in a single click.</h1>
-          <p class="hero-desc">A curated arcade with built-in authentication, progress tracking, and a streaming-style mini player. Designed for classrooms, teams, and creators who want a polished home for their games.</p>
-          <div class="hero-actions">
-            <button id="ctaPlay" class="cta primary">Play instantly</button>
-            <a class="cta secondary" href="about.html">View company deck</a>
-          </div>
-          <div class="hero-metrics">
-            <div><span>120+</span> sessions per day</div>
-            <div><span>4K+</span> matches recorded</div>
-            <div><span>18</span> curated titles</div>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="signal-card">
-            <p>Live leaderboard</p>
-            <h3>07:32 • Reaction Time</h3>
-            <ul>
-              <li><strong>Nova</strong><span>188 ms</span></li>
-              <li><strong>Pulse</strong><span>203 ms</span></li>
-              <li><strong>Orbit</strong><span>215 ms</span></li>
-            </ul>
-          </div>
-          <div class="signal-card alt">
-            <p>Studio uptime</p>
-            <h2>99.9%</h2>
-            <small>Backed by realtime monitoring & alerts.</small>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats">
-      <article class="stat-card">
-        <h4>Progress Cloud</h4>
-        <p>Automatic score archiving, replays, and player notes.</p>
-      </article>
-      <article class="stat-card">
-        <h4>Studio Controls</h4>
-        <p>Login, guest mode, and moderation tools ready to ship.</p>
-      </article>
-      <article class="stat-card">
-        <h4>Live Ops Ready</h4>
-        <p>Trigger announcements, featured drops, and spotlight slots.</p>
-      </article>
-    </section>
-
-    <section class="pillars">
-      <article>
-        <h5>Adaptive UI</h5>
-        <p>Responsive cards, neon depth, and motion art provide the “company site” feel stakeholders expect.</p>
-      </article>
-      <article>
-        <h5>Plug & Play Games</h5>
-        <p>Embed any title instantly. Mini player and modal keep the portal full width without collapsing.</p>
-      </article>
-      <article>
-        <h5>Data & Insights</h5>
-        <p>APIs capture reaction, arcade, and puzzle stats for every signed-in player.</p>
-      </article>
-    </section>
-
+    <!-- Simplified efficient layout: direct grid focus -->
     <main class="grid" id="grid" role="main" aria-live="polite"></main>
+
+    <!-- Fullscreen game container injected dynamically -->
+    <div id="fsGame" class="fs-game" aria-hidden="true"></div>
 
     <footer class="footer"><div class="footer-wave"></div><small>© 2025 Game Portal Studio • Crafted with GPT-5.1-Codex (Preview)</small></footer>
   </div>
 
-  <!-- standard centered modal (used on expand) -->
-  <div id="launcher" class="launcher" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="backdrop" aria-hidden="true"></div>
-    <div class="container" id="launcherContainer" role="document">
-      <button class="btn back" id="backBtn" aria-label="Back">Back</button>
-      <button class="btn close" id="closeBtn" aria-label="Close">Close</button>
-    </div>
-  </div>
-
-  <!-- persistent mini-player container (bottom-right) -->
-  <div id="miniPlayer" class="mini-player" aria-hidden="true" role="region">
-    <div class="mini-header" id="miniHeader">
-      <div class="mini-title" id="miniTitle">Player</div>
-      <div class="mini-controls">
-        <button id="miniExpand" title="Expand" class="mini-btn">⤢</button>
-        <button id="miniMinimize" title="Minimize" class="mini-btn">—</button>
-        <button id="miniClose" title="Close" class="mini-btn">✕</button>
-      </div>
-    </div>
-    <div class="mini-body" id="miniBody">
-      <!-- iframe injected here -->
-    </div>
-  </div>
+  <!-- legacy modal & mini-player removed for streamlined fullscreen experience -->
 
   <script defer src="./portal.app.js"></script>
   <noscript><div style="padding:20px;text-align:center;color:#ffdede;">Enable JS.</div></noscript>

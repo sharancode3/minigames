@@ -35,19 +35,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // CONFIG: All available games
 const GAMES = [
-  { id:'snake', title:'Crazy Snake', category:'Arcade', embed:'./games/snake/index.html' },
-  { id:'haunted-calculator', title:'Haunted Calculator', category:'Puzzle', embed:'./games/haunted/index.html' },
-  { id:'pingpong', title:'Ping Pong', category:'Sports', embed:'./games/pingpong/index.html' },
+  { id:'snake', title:'Snake', category:'Arcade', embed:'./games/snake/index.html' },
+  { id:'pingpong', title:'Paddle Bounce', category:'Arcade', embed:'./games/pingpong/index.html' },
+  { id:'bubbleshooter', title:'Bubble Shooter', category:'Arcade', embed:'./games/bubbleshooter/index.html' },
+  { id:'carracing', title:'Car Racing', category:'Racing', embed:'./games/carracing/index.html' },
+  { id:'puzzle', title:'Sliding Puzzle', category:'Puzzle', embed:'./games/puzzle/index.html' },
+  { id:'monkeytyping', title:'Monkey Typing', category:'Skill', embed:'./games/monkeytyping/index.html' },
   { id:'dino', title:'Dino Run', category:'Arcade', embed:'./games/dino/index.html' },
   { id:'wordguesser', title:'Word Guesser', category:'Puzzle', embed:'./games/wordguesser/index.html' },
-  { id:'reactiontime', title:'Reaction Time', category:'Skill', embed:'./games/reactiontime/index.html' }
+  { id:'reactiontime', title:'Reaction Time', category:'Skill', embed:'./games/reactiontime/index.html' },
+  { id:'haunted-calculator', title:'Haunted Calculator', category:'Puzzle', embed:'./games/haunted/index.html' }
 ];
 
 const grid = document.getElementById('grid');
-const launcher = document.getElementById('launcher'); // modal container
+const fsGame = document.getElementById('fsGame'); // fullscreen container
 
-if (!grid || !launcher) {
-  console.error('portal.app.js: required DOM elements missing (#grid or #launcher).');
+if (!grid || !fsGame) {
+  console.error('portal.app.js: required DOM elements missing (#grid or #fsGame).');
 } else {
 
   // small background particle canvas (optional, non-blocking)
@@ -97,6 +101,17 @@ if (!grid || !launcher) {
     grid?.scrollIntoView({ behavior:'smooth', block:'start' });
   });
 
+  // Theme toggle cycling through presets
+  const themeToggle = document.getElementById('themeToggle');
+  const themes = ['theme-ocean','theme-sunset','theme-forest'];
+  let themeIndex = 0;
+  themeToggle && themeToggle.addEventListener('click', () => {
+    document.body.classList.remove(...themes);
+    const next = themes[themeIndex];
+    document.body.classList.add(next);
+    themeIndex = (themeIndex + 1) % themes.length;
+  });
+
   // render grid
   function createCard(g){
     const card = document.createElement('div');
@@ -107,7 +122,7 @@ if (!grid || !launcher) {
       <div class="meta"><div class="title">${g.title}</div><div class="cat">${g.category}</div></div>
       <div class="play-badge">Play</div>
     `;
-    card.addEventListener('click', ()=> openGameModal(g));
+    card.addEventListener('click', ()=> openFullscreenGame(g));
     return card;
   }
   function render(){
@@ -145,66 +160,63 @@ if (!grid || !launcher) {
   let awaitingReplyAfterGameOver = false; // flag indicates game_over received and waiting for key to auto-open reply
   let replyVisible = false;
 
-  // open modal and attach replay/close behavior (container recreated every time for simplicity)
-  function openGameModal(game) {
+  // Open fullscreen game with right-side controls
+  let paused = false;
+  function openFullscreenGame(game){
     currentGame = game;
-    // clear and build modal skeleton
-    launcher.classList.add('open');
-    launcher.setAttribute('aria-hidden', 'false');
-    launcher.innerHTML = `
-      <div class="backdrop" aria-hidden="true" style="z-index:1000;pointer-events:auto;"></div>
-      <div class="container" id="launcherContainer" role="document" style="display:flex;flex-direction:column;position:relative;z-index:1001;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)">
-          <div style="font-weight:800">${escapeHtml(game.title)}</div>
-          <div style="display:flex;gap:8px">
-            <button id="replayBtn" class="btn" title="Replay">Replay</button>
-            <button id="closeBtn" class="btn close" title="Close">Close</button>
-          </div>
+    paused = false;
+    fsGame.classList.add('active');
+    fsGame.setAttribute('aria-hidden','false');
+    fsGame.innerHTML = `
+      <div class="stage">
+        <div class="game-frame" id="gameFrame"></div>
+        <div class="game-controls" aria-label="Game Controls">
+          <button class="gc-btn" id="btnPause">⏸ Pause</button>
+          <button class="gc-btn hidden" id="btnResume">▶ Resume</button>
+          <button class="gc-btn exit" id="btnExit">⌂ Home</button>
+          <button class="gc-btn" id="btnReplay">↻ Replay</button>
         </div>
-        <div id="iframeWrap" style="flex:1;min-height:320px;background:#000;position:relative;z-index:1002"></div>
-      </div>
-    `;
+        <div class="pause-layer" id="pauseLayer" aria-hidden="true"><div class="pause-msg">PAUSED</div></div>
+      </div>`;
+    const frame = document.getElementById('gameFrame');
+    attachNewIframeToWrap(game.embed, frame);
+    wireFullscreenControls();
+    setTimeout(()=> { try { currentIframe?.contentWindow?.focus(); } catch(e){} }, 350);
+  }
 
-    const backdrop = launcher.querySelector('.backdrop');
-    const iframeWrap = document.getElementById('iframeWrap');
+  function wireFullscreenControls(){
+    const btnPause = document.getElementById('btnPause');
+    const btnResume = document.getElementById('btnResume');
+    const btnExit = document.getElementById('btnExit');
+    const btnReplay = document.getElementById('btnReplay');
+    const pauseLayer = document.getElementById('pauseLayer');
+    const frame = document.getElementById('gameFrame');
 
-    // add iframe
-    attachNewIframeToWrap(game.embed, iframeWrap);
-
-    // handlers: replay & close
-    const replayBtn = document.getElementById('replayBtn');
-    const closeBtn = document.getElementById('closeBtn');
-
-    // replay reloads iframe (works multiple times)
-    replayBtn && replayBtn.addEventListener('click', () => {
-      if (!iframeWrap) return;
-      // remove old iframe safely
+    btnPause?.addEventListener('click', ()=>{
+      if (paused) return; paused = true;
+      pauseLayer.classList.add('show');
+      btnPause.classList.add('hidden');
+      btnResume.classList.remove('hidden');
+      frame.style.filter = 'blur(3px) brightness(.6)';
+    });
+    btnResume?.addEventListener('click', ()=>{
+      if (!paused) return; paused = false;
+      pauseLayer.classList.remove('show');
+      btnResume.classList.add('hidden');
+      btnPause.classList.remove('hidden');
+      frame.style.filter = 'none';
+      try { currentIframe?.contentWindow?.focus(); } catch(e){}
+    });
+    btnExit?.addEventListener('click', ()=>{
+      if (replyVisible){ return; }
+      exitFullscreen();
+    });
+    btnReplay?.addEventListener('click', ()=>{
+      if (!frame) return;
       if (currentIframe && currentIframe.parentNode) try { currentIframe.remove(); } catch(e){}
-      attachNewIframeToWrap(game.embed, iframeWrap);
+      attachNewIframeToWrap(currentGame.embed, frame);
+      if (paused){ paused=false; pauseLayer.classList.remove('show'); btnResume.classList.add('hidden'); btnPause.classList.remove('hidden'); frame.style.filter='none'; }
     });
-
-    // close hides modal unless reply is visible (when replyVisible is true we prevent close)
-    closeBtn && closeBtn.addEventListener('click', () => {
-      if (replyVisible) {
-        // optionally show brief shake or notice
-        const notice = document.createElement('div');
-        notice.textContent = 'Reply required before closing';
-        Object.assign(notice.style, { position:'fixed', left:'50%', top:'20%', transform:'translateX(-50%)', background:'#ffb3b3', color:'#200', padding:'8px 12px', borderRadius:'6px', zIndex:13000 });
-        document.body.appendChild(notice);
-        setTimeout(()=> notice.remove(), 900);
-        return;
-      }
-      closeModal();
-    });
-
-    // backdrop click closes if reply not visible
-    backdrop && backdrop.addEventListener('click', () => {
-      if (replyVisible) return;
-      closeModal();
-    });
-
-    // focus iframe after short delay
-    setTimeout(()=> { try { currentIframe && currentIframe.contentWindow && currentIframe.contentWindow.focus && currentIframe.contentWindow.focus(); } catch(e){}; }, 250);
   }
 
   function attachNewIframeToWrap(src, wrapEl){
@@ -222,17 +234,12 @@ if (!grid || !launcher) {
     });
   }
 
-  function closeModal(){
-    // remove iframe
+  function exitFullscreen(){
     if (currentIframe && currentIframe.parentNode) try { currentIframe.remove(); } catch(e){}
-    currentIframe = null;
-    currentGame = null;
-    awaitingReplyAfterGameOver = false;
-    replyVisible = false;
-    // re-enable any disabled state
-    launcher.classList.remove('open');
-    launcher.innerHTML = '';
-    launcher.setAttribute('aria-hidden', 'true');
+    currentIframe = null; currentGame = null; awaitingReplyAfterGameOver = false; replyVisible = false;
+    fsGame.classList.remove('active');
+    fsGame.setAttribute('aria-hidden','true');
+    fsGame.innerHTML = '';
   }
 
   // PostMessage listener for game over
@@ -371,7 +378,7 @@ if (!grid || !launcher) {
     }
     // Esc closes modal if reply not visible
     if (e.key === 'Escape' && !replyVisible) {
-      if (launcher.classList.contains('open')) closeModal();
+      if (fsGame.classList.contains('active')) exitFullscreen();
     }
   });
 

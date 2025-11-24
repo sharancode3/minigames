@@ -1,31 +1,47 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const box = 20; // size of one block
-let snake = [{ x: 9 * box, y: 10 * box }];
-let direction;
+const box = 20; // size of cell
+let snake = [{ x: 10 * box, y: 10 * box }];
+let direction = 'RIGHT';
 let food = randomFood();
 let score = 0;
 let gameOver = false;
+let paused = false;
+const scoreEl = document.getElementById('score');
+const overlay = document.getElementById('overlay');
 
 document.addEventListener("keydown", setDirection);
 
 function setDirection(event) {
-  if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-  else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-  else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-  else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+  const k = event.key;
+  if ((k === 'ArrowLeft' || k === 'a' || k === 'A') && direction !== 'RIGHT') direction = 'LEFT';
+  else if ((k === 'ArrowUp' || k === 'w' || k === 'W') && direction !== 'DOWN') direction = 'UP';
+  else if ((k === 'ArrowRight' || k === 'd' || k === 'D') && direction !== 'LEFT') direction = 'RIGHT';
+  else if ((k === 'ArrowDown' || k === 's' || k === 'S') && direction !== 'UP') direction = 'DOWN';
+  else if (k === 'p' || k === 'P') togglePause();
+  else if ((k === 'r' || k === 'R') && gameOver) restart();
+}
+
+function togglePause(){
+  if (gameOver) return;
+  paused = !paused;
+  if (paused) {
+    overlay.innerHTML = '<div>PAUSED</div><div style="font-size:1rem;font-weight:400">Press P to resume</div>';
+    overlay.classList.add('show');
+  } else {
+    overlay.classList.remove('show');
+  }
 }
 
 function randomFood() {
-  return {
-    x: Math.floor(Math.random() * 20) * box,
-    y: Math.floor(Math.random() * 20) * box
-  };
+  const cols = Math.floor(canvas.width / box);
+  const rows = Math.floor(canvas.height / box);
+  return { x: Math.floor(Math.random()*cols)*box, y: Math.floor(Math.random()*rows)*box };
 }
 
 function draw() {
-  if (gameOver) return;
+  if (gameOver || paused) return;
 
   // Glowing background effect
   ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
@@ -83,21 +99,24 @@ function draw() {
 
   snake.unshift(newHead);
 
-  // Draw Score
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = "#fff";
-  ctx.font = "20px monospace";
-  ctx.fillText("Score: " + score, 10, 490);
+  scoreEl.textContent = 'Score: ' + score;
 }
 
 function endGame() {
   gameOver = true;
-  ctx.fillStyle = "#ff0000";
-  ctx.font = "40px Impact";
-  ctx.textAlign = "center";
-  ctx.fillText("💀 GAME OVER 💀", canvas.width / 2, canvas.height / 2);
-  ctx.font = "20px monospace";
-  ctx.fillText("Your Score: " + score, canvas.width / 2, canvas.height / 2 + 40);
+  overlay.innerHTML = `<div>GAME OVER</div><div style="font-size:1rem;font-weight:400">Score: ${score}</div><button id="restartBtn" style="padding:10px 18px;border-radius:12px;border:0;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#ff004d,#ff7a18);color:#050007">Restart (R)</button>`;
+  overlay.classList.add('show');
+  document.getElementById('restartBtn').addEventListener('click', restart);
+  // notify parent
+  try { window.parent.postMessage({ type:'game_over', gameId:'snake', result:'lost', score }, '*'); } catch(e) {}
 }
 
-let game = setInterval(draw, 100);
+function restart(){
+  snake = [{ x: 10*box, y: 10*box }];
+  direction = 'RIGHT';
+  food = randomFood();
+  score = 0; gameOver=false; paused=false;
+  overlay.classList.remove('show');
+}
+
+setInterval(draw, 110);
