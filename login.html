@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Game Portal</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="bg-canvas"></div>
+  
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-section">
+        <div class="logo-icon">GP</div>
+        <h1>Game Portal</h1>
+        <p class="tagline">Play. Compete. Progress.</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Login</button>
+        <button class="tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="form active">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary">Login</button>
+        <div class="error-message" id="loginError"></div>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signupForm" class="form">
+        <div class="form-group">
+          <label for="signupUsername">Username</label>
+          <input type="text" id="signupUsername" required placeholder="Choose a username">
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" required placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" required placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <input type="password" id="signupConfirm" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary">Create Account</button>
+        <div class="error-message" id="signupError"></div>
+      </form>
+
+      <div class="guest-section">
+        <div class="divider">or</div>
+        <button id="guestBtn" class="btn-secondary">Continue as Guest</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

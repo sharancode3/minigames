@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Portal — Play, Compete, Progress</title>
+  <link rel="stylesheet" href="./portal.style.css">
+</head>
+<body>
+
+  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+  <header class="header">
+    <div class="brand">
+      <div class="logo-mark">GP</div>
+      <div>
+        <div class="title">Game Portal</div>
+        <div class="subtitle">Play. Compete. Progress.</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search-wrap"><input id="search" placeholder="Search games..." /></div>
+      <div class="profile">
+        <a href="about.html" style="color: #ff6b6b; margin-right: 12px; text-decoration: none; font-weight: 600; transition: color 0.3s;">About</a>
+        <span id="username" style="color: #ff6b6b; margin-right: 12px; font-weight: 600;"></span>
+        <button id="logoutBtn" class="icon-btn" title="Logout" style="background: rgba(255,0,0,0.1); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,0,0,0.3); color: #ff6b6b; cursor: pointer; font-weight: 600;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2 class="hero-title">Featured Games</h2>
+    <p class="hero-desc">Choose your game and start playing. Your progress is automatically saved!</p>
+  </section>
+
+  <main class="grid" id="grid" role="main" aria-live="polite"></main>
+
+  <footer class="footer"><div class="footer-wave"></div><small>© 2025 Game Portal</small></footer>
+
+  <!-- standard centered modal (used on expand) -->
+  <div id="launcher" class="launcher" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="container" id="launcherContainer" role="document">
+      <button class="btn back" id="backBtn" aria-label="Back">Back</button>
+      <button class="btn close" id="closeBtn" aria-label="Close">Close</button>
+    </div>
+  </div>
+
+  <!-- persistent mini-player container (bottom-right) -->
+  <div id="miniPlayer" class="mini-player" aria-hidden="true" role="region">
+    <div class="mini-header" id="miniHeader">
+      <div class="mini-title" id="miniTitle">Player</div>
+      <div class="mini-controls">
+        <button id="miniExpand" title="Expand" class="mini-btn">⤢</button>
+        <button id="miniMinimize" title="Minimize" class="mini-btn">—</button>
+        <button id="miniClose" title="Close" class="mini-btn">✕</button>
+      </div>
+    </div>
+    <div class="mini-body" id="miniBody">
+      <!-- iframe injected here -->
+    </div>
+  </div>
+
+  <script defer src="./portal.app.js"></script>
+  <noscript><div style="padding:20px;text-align:center;color:#ffdede;">Enable JS.</div></noscript>
+</body>
+</html>

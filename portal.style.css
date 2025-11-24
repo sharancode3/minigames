@@ -1,0 +1,101 @@
+/* portal.style.css — Red/Black Gaming Theme */
+:root{
+  --bg-1:#0a0000; --bg-2:#1a0505; --accent:#ff0000; --accent-2:#ff3333; --muted:#ff6b6b; --dark:#000000; --card-radius:14px; --ease:cubic-bezier(.16,.8,.36,1);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:Inter,system-ui, -apple-system; color:#ffebeb;
+  background: radial-gradient(800px 400px at 10% 10%, rgba(255,0,0,0.08), transparent),
+              linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  display:flex; flex-direction:column; align-items:center; padding:24px; overflow-x:hidden;
+}
+
+/* canvas */
+.bg-canvas{position:fixed; inset:0; z-index:0; pointer-events:none}
+
+/* header */
+.header{width:100%;max-width:1200px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.logo-mark{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;box-shadow:0 0 20px rgba(255,0,0,0.3)}
+.title{font-weight:800}
+.subtitle{color:var(--muted);font-size:13px}
+.controls{display:flex;gap:12px;align-items:center}
+.search-wrap input{padding:8px 12px;border-radius:10px;background:rgba(255,0,0,0.05);border:1px solid rgba(255,0,0,0.2);color:#ffebeb;transition:all 0.3s ease}
+
+/* grid */
+.grid{width:100%;max-width:1200px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:14px;z-index:5}
+
+/* card */
+.card{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,0,0,0.08), rgba(0,0,0,0.4));border:1px solid rgba(255,0,0,0.2);display:flex;gap:12px;align-items:center;cursor:pointer;transition:transform 260ms var(--ease),box-shadow 260ms var(--ease)}
+.card:hover{transform:translateY(-8px) scale(1.02); box-shadow: 0 30px 80px rgba(255,0,0,0.4), 0 0 40px rgba(255,0,0,0.2)}
+.logo{width:84px;height:84px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff6b6b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;box-shadow:0 0 15px rgba(255,0,0,0.3)}
+.meta{flex:1}
+.play-badge{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff;padding:8px 12px;border-radius:999px;font-weight:800;box-shadow:0 0 10px rgba(255,0,0,0.5);transition:all 0.3s ease}
+.play-badge:hover{box-shadow:0 0 20px rgba(255,0,0,0.8);transform:scale(1.05)}
+
+/* floating clone */
+.floating{position:fixed;z-index:9999;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+/* centered launcher */
+.launcher{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:9998}
+.launcher.open{display:flex}
+.backdrop{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.7),rgba(2,6,23,0.85));backdrop-filter:blur(4px)}
+.container{width:min(1100px,96%);height:min(80vh,900px);border-radius:14px;background:linear-gradient(180deg, rgba(10,14,20,0.96),#000);overflow:hidden;box-shadow:0 40px 120px rgba(2,6,23,0.9)}
+.container iframe{width:100%;height:100%;border:0}
+
+/* mini-player (docked) */
+.mini-player{
+  position:fixed; right:18px; bottom:18px; width:340px; height:190px; border-radius:12px; background:linear-gradient(180deg, rgba(20,0,0,0.95), rgba(10,0,0,0.98));
+  box-shadow:0 30px 90px rgba(255,0,0,0.4), 0 0 30px rgba(255,0,0,0.2); border:1px solid rgba(255,0,0,0.3); z-index:12000; transform-origin:bottom right; transition: transform 260ms var(--ease), opacity 260ms;
+  overflow:hidden; display:none; cursor:grab;
+}
+.mini-player.dragging{cursor:grabbing}
+.mini-player.show{display:block; opacity:1}
+.mini-header{height:40px; display:flex; align-items:center; justify-content:space-between; padding:6px 8px; gap:8px; border-bottom:1px solid rgba(255,0,0,0.3); background:rgba(255,0,0,0.05)}
+.mini-title{font-weight:800;font-size:13px;color:#ffebeb}
+.mini-controls{display:flex;gap:6px}
+.mini-btn{background:transparent;border:0;color:var(--muted);font-size:14px;cursor:pointer;padding:6px;border-radius:8px}
+.mini-body{height:calc(100% - 40px); background:#000; display:flex; align-items:center; justify-content:center}
+.mini-body iframe{width:100%;height:100%;border:0;display:block}
+
+/* expanded state */
+.mini-player.expanded{
+  position:fixed; left:50%; top:50%; right:auto; bottom:auto; transform:translate(-50%,-50%); width:min(1100px,96%); height:min(80vh,900px); border-radius:14px;
+}
+
+/* reply box styling (small) */
+#portal-reply-box{position:fixed;right:20px;bottom:220px;width:320px;background:linear-gradient(180deg,rgba(20,0,0,0.98),#000);border-radius:12px;padding:12px;box-shadow:0 18px 60px rgba(255,0,0,0.5);border:1px solid rgba(255,0,0,0.3);z-index:13000;color:#ffebeb}
+
+/* hero section */
+.hero{width:100%;max-width:1200px;text-align:center;margin-top:30px;margin-bottom:20px;z-index:5}
+.hero-title{font-size:28px;font-weight:800;color:#ff0000;margin-bottom:10px;text-shadow:0 0 20px rgba(255,0,0,0.4)}
+.hero-desc{color:var(--muted);font-size:15px}
+
+/* footer */
+.footer{width:100%;max-width:1200px;text-align:center;margin-top:40px;padding:20px;color:var(--muted);font-size:12px;z-index:5}
+
+/* brand section */
+.brand{display:flex;gap:12px;align-items:center}
+
+/* category badge */
+.cat{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* button styling */
+.icon-btn{background:transparent;border:0;cursor:pointer;font-size:18px;transition:all 0.3s ease}
+.icon-btn:hover{transform:scale(1.1)}
+
+/* modal buttons */
+.btn{padding:8px 16px;border-radius:8px;border:0;font-weight:700;cursor:pointer;transition:all 0.3s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn.close{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff}
+.btn.back{background:rgba(255,0,0,0.1);color:var(--muted);border:1px solid rgba(255,0,0,0.2)}
+
+/* responsive */
+@media (max-width:640px){
+  .mini-player{right:12px;bottom:12px;width:260px;height:160px}
+  .logo{width:64px;height:64px}
+  .header{flex-direction:column;gap:15px}
+  .controls{width:100%;justify-content:space-between}
+  .search-wrap input{width:100%}
+  .stats-bar{flex-direction:column;gap:10px}
+}
