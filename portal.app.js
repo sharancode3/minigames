@@ -50,15 +50,22 @@ if (!grid || !launcher) {
   console.error('portal.app.js: required DOM elements missing (#grid or #launcher).');
 } else {
 
-  // small background particle canvas (optional, non-blocking) - Red theme
+  // small background particle canvas (optional, non-blocking)
   (function smallParticles(){
     const c = document.getElementById('bgCanvas');
     if (!c) return;
     const ctx = c.getContext('2d');
     function fit(){ c.width = innerWidth; c.height = innerHeight; }
     fit(); addEventListener('resize', fit);
-    const parts = Array.from({length: Math.max(8, Math.floor((c.width*c.height)/140000))}, ()=>({
-      x: Math.random()*c.width, y: Math.random()*c.height, r: Math.random()*1.8+0.4, a: Math.random()*0.08+0.03, vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.08
+    const palette = ['255,0,77','0,240,255','124,58,237'];
+    const parts = Array.from({length: Math.max(12, Math.floor((c.width*c.height)/120000))}, () => ({
+      x: Math.random()*c.width,
+      y: Math.random()*c.height,
+      r: Math.random()*1.8+0.4,
+      a: Math.random()*0.08+0.03,
+      vx: (Math.random()-0.5)*0.25,
+      vy: (Math.random()-0.5)*0.08,
+      tint: palette[Math.floor(Math.random()*palette.length)]
     }));
     (function tick(){
       ctx.clearRect(0,0,c.width,c.height);
@@ -66,7 +73,7 @@ if (!grid || !launcher) {
         p.x += p.vx; p.y += p.vy;
         if (p.x < -10) p.x = c.width + 10; if (p.x > c.width + 10) p.x = -10;
         if (p.y < -10) p.y = c.height + 10; if (p.y > c.height + 10) p.y = -10;
-        ctx.beginPath(); ctx.fillStyle = `rgba(255,0,0,${p.a})`; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.fillStyle = `rgba(${p.tint},${p.a})`; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
       }
       requestAnimationFrame(tick);
     })();
@@ -76,13 +83,18 @@ if (!grid || !launcher) {
   const searchInput = document.getElementById('search');
   let filteredGames = [...GAMES];
   
-  searchInput.addEventListener('input', (e) => {
+  searchInput && searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase();
     filteredGames = GAMES.filter(g => 
       g.title.toLowerCase().includes(query) || 
       g.category.toLowerCase().includes(query)
     );
     render();
+  });
+
+  const playCTA = document.getElementById('ctaPlay');
+  playCTA && playCTA.addEventListener('click', () => {
+    grid?.scrollIntoView({ behavior:'smooth', block:'start' });
   });
 
   // render grid
