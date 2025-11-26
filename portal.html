@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Portal — Play, Compete, Progress</title>
+  <link rel="stylesheet" href="./portal.style.css">
+</head>
+<body>
+  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+  <div class="floating-orb orb-one"></div>
+  <div class="floating-orb orb-two"></div>
+  <div class="page-shell">
+    <header class="header">
+      <div class="brand">
+        <div class="logo-mark">GP</div>
+        <div>
+          <div class="title">Game Portal</div>
+          <div class="subtitle">Arcade cloud for modern teams.</div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="search-wrap"><input id="search" placeholder="Search games, tags, moods..." /></div>
+        <div class="profile">
+          <a class="nav-link" href="about.html">About</a>
+          <span id="username" class="username-pill"></span>
+          <button id="logoutBtn" class="ghost-btn" title="Logout">Logout</button>
+          <button id="themeToggle" class="theme-toggle" title="Change Theme">Theme</button>
+        </div>
+      </div>
+    </header>
+    <main class="grid" id="grid" role="main" aria-live="polite"></main>
+    <div id="fsGame" class="fs-game" aria-hidden="true"></div>
+    <footer class="footer"><small>© 2025 Game Portal Studio</small></footer>
+  </div>
+  <script defer src="./portal.app.js"></script>
+</body>
+</html>

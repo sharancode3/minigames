@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register - Hyper Plays</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <div class="bg-canvas"></div>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-section">
+        <div class="logo-icon">HP</div>
+        <h1>Join Hyper Plays</h1>
+        <p class="tagline">Create an account to track highs!</p>
+      </div>
+      <form id="regForm" class="form active">
+        <div class="form-group">
+          <label for="regUsername">Username</label>
+          <input id="regUsername" type="text" required placeholder="Player name" />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input id="regEmail" type="email" required placeholder="you@email.com" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input id="regPassword" type="password" required placeholder="••••••" />
+        </div>
+        <div class="form-group">
+          <label for="regConfirm">Confirm Password</label>
+          <input id="regConfirm" type="password" required placeholder="••••••" />
+        </div>
+        <button type="submit" class="btn-primary">Create Account</button>
+        <div class="error-message" id="regError"></div>
+      </form>
+      <div style="text-align:center;margin-top:12px;font-size:.75rem;">
+        Already have an account? <a href="login.html" style="color:#ff7b47;font-weight:700;text-decoration:none;">Login</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    const API_URL='http://localhost:3000/api';
+    const form=document.getElementById('regForm');
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const u=regUsername.value.trim();
+      const em=regEmail.value.trim();
+      const pw=regPassword.value; const cf=regConfirm.value; const err=document.getElementById('regError');
+      if(pw!==cf){ showErr('Passwords do not match'); return; }
+      if(pw.length<6){ showErr('Password too short'); return; }
+      try{
+        const res= await fetch(API_URL+'/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,email:em,password:pw})});
+        const data= await res.json();
+        if(res.ok){ localStorage.setItem('authToken',data.token); localStorage.setItem('user',JSON.stringify(data.user)); window.location.href='index.html'; }
+        else showErr(data.message||'Signup failed');
+      }catch(e){ // offline fallback
+        const users=JSON.parse(localStorage.getItem('offlineUsers')||'[]');
+        if(users.find(x=>x.email===em)){ showErr('Email already exists (offline)'); return; }
+        const nu={id:'user_'+Date.now(),username:u,email:em,password:pw};
+        users.push(nu); localStorage.setItem('offlineUsers',JSON.stringify(users));
+        const dataUser={id:nu.id,username:nu.username,email:nu.email};
+        localStorage.setItem('authToken','offline_'+nu.id); localStorage.setItem('user',JSON.stringify(dataUser));
+        window.location.href='index.html';
+      }
+      function showErr(m){ err.textContent=m; err.classList.add('show'); setTimeout(()=>err.classList.remove('show'),4000); }
+    });
+    if(localStorage.getItem('authToken')) window.location.href='index.html';
+  </script>
+</body>
+</html>

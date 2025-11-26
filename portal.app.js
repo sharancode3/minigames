@@ -35,17 +35,36 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // CONFIG: All available games
 const GAMES = [
-  { id:'snake', title:'Snake', category:'Arcade', embed:'./games/snake/index.html' },
-  { id:'pingpong', title:'Paddle Bounce', category:'Arcade', embed:'./games/pingpong/index.html' },
-  { id:'bubbleshooter', title:'Bubble Shooter', category:'Arcade', embed:'./games/bubbleshooter/index.html' },
-  { id:'carracing', title:'Car Racing', category:'Racing', embed:'./games/carracing/index.html' },
-  { id:'puzzle', title:'Sliding Puzzle', category:'Puzzle', embed:'./games/puzzle/index.html' },
-  { id:'monkeytyping', title:'Monkey Typing', category:'Skill', embed:'./games/monkeytyping/index.html' },
-  { id:'dino', title:'Dino Run', category:'Arcade', embed:'./games/dino/index.html' },
-  { id:'wordguesser', title:'Word Guesser', category:'Puzzle', embed:'./games/wordguesser/index.html' },
-  { id:'reactiontime', title:'Reaction Time', category:'Skill', embed:'./games/reactiontime/index.html' },
-  { id:'haunted-calculator', title:'Haunted Calculator', category:'Puzzle', embed:'./games/haunted/index.html' }
+  { id:'snake', title:'Neon Serpent', category:'Arcade', embed:'./games/snake/index.html', blurb:'Synth snake combos with chaining boosts.' },
+  { id:'pingpong', title:'Loop Rally', category:'Arcade', embed:'./games/pingpong/index.html', blurb:'Laser-fast paddle rallies with looping shots.' },
+  { id:'bubbleshooter', title:'Orb Pop Deluxe', category:'Arcade', embed:'./games/bubbleshooter/index.html', blurb:'Color-matching bubble calm with score climbs.' },
+  { id:'carracing', title:'Turbo Drift', category:'Racing', embed:'./games/carracing/index.html', blurb:'Slide through neon corners and chase best laps.' },
+  { id:'puzzle', title:'Slide Forge', category:'Puzzle', embed:'./games/puzzle/index.html', blurb:'Craft the picture one satisfying move at a time.' },
+  { id:'crazytype', title:'Key Frenzy', category:'Skill', embed:'./games/monkeytyping/index.html', blurb:'Typing gauntlet for lightning-fast accuracy.' },
+  { id:'dino', title:'Astro Strider', category:'Arcade', embed:'./games/dino/index.html', blurb:'Dash over cosmic cliffs and dodge meteors.' },
+  { id:'wordguesser', title:'Cipher Quest', category:'Puzzle', embed:'./games/wordguesser/index.html', blurb:'Guess words under pressure with streak bonuses.' },
+  { id:'reactiontime', title:'Blink Lab', category:'Skill', embed:'./games/reactiontime/index.html', blurb:'Minimal reflex trials to shave off milliseconds.' },
+  { id:'haunted-calculator', title:'Phantom Calc', category:'Puzzle', embed:'./games/haunted/index.html', blurb:'Haunted math riddles that glitch the display.' },
+  { id:'wordle', title:'Word Pulse', category:'Puzzle', embed:'./games/wordle/index.html', blurb:'Word-wave challenge with hints and penalties.' }
 ];
+
+// Thumbnail file paths (SVG). Replace with real art assets later.
+const THUMBS = {
+  snake: 'assets/thumbs/snake.svg',
+  pingpong: 'assets/thumbs/pingpong.svg',
+  bubbleshooter: 'assets/thumbs/bubbleshooter.svg',
+  carracing: 'assets/thumbs/carracing.svg',
+  puzzle: 'assets/thumbs/puzzle.svg',
+  crazytype: 'assets/thumbs/crazytype.svg',
+  dino: 'assets/thumbs/dino.svg',
+  wordguesser: 'assets/thumbs/wordguesser.svg',
+  reactiontime: 'assets/thumbs/reactiontime.svg',
+  'haunted-calculator': 'assets/thumbs/haunted-calculator.svg'
+  ,wordle: 'assets/thumbs/wordle.svg'
+};
+
+// Feedback opt-out key
+const FEEDBACK_OPT_KEY = 'portal_feedback_optout';
 
 const grid = document.getElementById('grid');
 const fsGame = document.getElementById('fsGame'); // fullscreen container
@@ -117,9 +136,14 @@ if (!grid || !fsGame) {
     const card = document.createElement('div');
     card.className = 'card';
     card.dataset.id = g.id;
+    const thumb = THUMBS[g.id] ? `<img class="thumb" src="${THUMBS[g.id]}" alt="${escapeHtml(g.title)} thumbnail"/>` : `<div class="logo" aria-hidden="true">${g.title.split(' ').map(w=>w[0]).join('').toUpperCase()}</div>`;
     card.innerHTML = `
-      <div class="logo" aria-hidden="true">${g.title.split(' ').map(w=>w[0]).join('').toUpperCase()}</div>
-      <div class="meta"><div class="title">${g.title}</div><div class="cat">${g.category}</div></div>
+      ${thumb}
+      <div class="meta">
+        <div class="title">${g.title}</div>
+        <div class="cat">${g.category}</div>
+        <p class="blurb">${g.blurb || ''}</p>
+      </div>
       <div class="play-badge">Play</div>
     `;
     card.addEventListener('click', ()=> openFullscreenGame(g));
@@ -138,6 +162,16 @@ if (!grid || !fsGame) {
     }
   }
   render();
+
+  // Auto-launch game if query param provided (enables direct HUD play from homepage)
+  const launchParam = new URLSearchParams(location.search).get('game');
+  if (launchParam){
+    const autoGame = GAMES.find(g=>g.id===launchParam);
+    if (autoGame){
+      // Slight delay to ensure DOM ready
+      setTimeout(()=> openFullscreenGame(autoGame), 50);
+    }
+  }
 
   // helper to build iframe (ensures consistent z-index/pointer behavior)
   function buildIframe(src){
@@ -170,6 +204,13 @@ if (!grid || !fsGame) {
     fsGame.innerHTML = `
       <div class="stage">
         <div class="game-frame" id="gameFrame"></div>
+        <aside class="hud-panel" id="hudPanel" aria-label="Player Stats">
+          <div class="hud-row hud-user">👤 <span id="hudUser">${escapeHtml(currentUser?.username||'Player')}</span></div>
+          <div class="hud-row hud-game">🎮 <span id="hudGame">${escapeHtml(game.title)}</span></div>
+          <div class="hud-row">Score: <span id="hudScore">—</span></div>
+          <div class="hud-row">High: <span id="hudHigh">${getStoredHigh(game.id) ?? '—'}</span></div>
+          <div class="hud-mini-help">(Scores update after each run)</div>
+        </aside>
         <div class="game-controls" aria-label="Game Controls">
           <button class="gc-btn" id="btnPause">⏸ Pause</button>
           <button class="gc-btn hidden" id="btnResume">▶ Resume</button>
@@ -252,8 +293,19 @@ if (!grid || !fsGame) {
     // Save progress to backend
     saveGameProgress(data.gameId || currentGame?.id, data.score, data.stats, data.result);
     
+    // Update HUD score/high
+    const gid = data.gameId || currentGame?.id;
+    const scoreVal = typeof data.score === 'number' ? data.score : (data.score? Number(data.score): null);
+    if (gid && scoreVal != null){
+      const hs = updateHighIfNeeded(gid, scoreVal);
+      const hudScore = document.getElementById('hudScore');
+      const hudHigh = document.getElementById('hudHigh');
+      if(hudScore) hudScore.textContent = scoreVal;
+      if(hudHigh) hudHigh.textContent = hs;
+    }
+
     if (data.result === 'lost') {
-      // mark awaiting reply; show reply immediately
+      if (localStorage.getItem(FEEDBACK_OPT_KEY)==='1') return; // user opted out
       awaitingReplyAfterGameOver = true;
       showReplyBox(data.gameId || data.id || currentGame?.id || 'unknown', data.score ?? null);
     }
@@ -317,11 +369,12 @@ if (!grid || !fsGame) {
     box.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div style="font-weight:800">${escapeHtml(title)}</div>
-        <button id="reply-close" style="background:transparent;border:0;color:#9fb0c6;cursor:pointer">✕</button>
+        <button id="reply-close" aria-label="Close feedback" style="background:transparent;border:0;color:#9fb0c6;cursor:pointer">✕</button>
       </div>
-      <div style="font-size:13px;color:#9fb0c6;margin-bottom:8px">You lost • Score: ${score ?? '—'}</div>
-      <textarea id="reply-text" rows="4" placeholder="Leave feedback..." style="width:100%;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);color:#eaf9ff"></textarea>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+      <div style="font-size:13px;color:#9fb0c6;margin-bottom:8px">You lost • Score: ${score ?? '—'} (optional feedback)</div>
+      <textarea id="reply-text" rows="3" placeholder="Quick feedback (optional)" style="width:100%;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);color:#eaf9ff"></textarea>
+      <div class="opt-row"><input type="checkbox" id="reply-optout" /> <label for="reply-optout">Don't ask again</label></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
         <button id="reply-send" style="padding:8px 12px;border-radius:8px;border:0;background:linear-gradient(180deg,#00b7e6,#00d5ff);color:#041017;font-weight:800;cursor:pointer">Send</button>
         <button id="reply-skip" style="padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#9fb0c6;cursor:pointer">Skip</button>
       </div>
@@ -330,42 +383,26 @@ if (!grid || !fsGame) {
 
     // Disable modal close behavior while reply visible by setting replyVisible true (close handlers check it)
     // Hook buttons
-    document.getElementById('reply-close').addEventListener('click', () => {
-      // allow closing reply box (but keep modal open)
+    function finishClose(){
+      const opt = document.getElementById('reply-optout');
+      if (opt && opt.checked){ localStorage.setItem(FEEDBACK_OPT_KEY,'1'); }
       replyVisible = false;
       const el = document.getElementById('portal-reply-box'); if (el) el.remove();
-    });
-    document.getElementById('reply-skip').addEventListener('click', () => {
-      replyVisible = false;
-      const el = document.getElementById('portal-reply-box'); if (el) el.remove();
-    });
+    }
+    document.getElementById('reply-close').addEventListener('click', finishClose);
+    document.getElementById('reply-skip').addEventListener('click', finishClose);
     document.getElementById('reply-send').addEventListener('click', () => {
       const text = document.getElementById('reply-text').value.trim();
-      if (!text) {
-        box.animate([{ transform:'translateX(0)' }, { transform:'translateX(-8px)' }, { transform:'translateX(0)' }], { duration:220 });
-        return;
+      if (text){
+        const reply = { id:'r_'+Date.now(), gameId, score, text, ts: new Date().toISOString() };
+        try { const arr = JSON.parse(localStorage.getItem('gameReplies')||'[]'); arr.push(reply); localStorage.setItem('gameReplies', JSON.stringify(arr)); } catch(e){}
+        console.log('Saved reply:', reply);
       }
-      const reply = { id:'r_'+Date.now(), gameId, score, text, ts: new Date().toISOString() };
-      try {
-        const arr = JSON.parse(localStorage.getItem('gameReplies')||'[]'); arr.push(reply); localStorage.setItem('gameReplies', JSON.stringify(arr));
-      } catch(e){}
-      console.log('Saved reply:', reply);
-      // remove box and re-enable close
-      replyVisible = false;
-      box.innerHTML = `<div style="padding:18px;text-align:center;color:#baf6ff;font-weight:800">Thanks — reply saved.</div>`;
-      setTimeout(()=> { const el = document.getElementById('portal-reply-box'); if (el) el.remove(); }, 1200);
+      box.innerHTML = `<div style="padding:18px;text-align:center;color:#baf6ff;font-weight:800">${text? 'Thanks — feedback saved.' : 'Skipped.'}</div>`;
+      setTimeout(finishClose, 900);
     });
 
-    // After showing reply, also listen for ANY key press to auto-send the reply UI if they press a key (one-time)
-    function onAnyKeyOpenReply(e){
-      // If reply already visible we ignore here
-      if (replyVisible) return;
-      showReplyBox(gameId, score);
-      window.removeEventListener('keydown', onAnyKeyOpenReply);
-    }
-    // (We already show it immediately above, but keep this handler in case you prefer open on key)
-    // window.addEventListener('keydown', onAnyKeyOpenReply, { once: true });
-    // (We commented it out because we display reply immediately when game_over occurs)
+    // (Key-trigger auto open removed to reduce disturbance.)
   }
 
   // Also support manual test: any key after game_over triggers the reply UI (if awaitingReplyAfterGameOver true)
@@ -384,5 +421,15 @@ if (!grid || !fsGame) {
 
   // small helper
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  // High score helpers
+  function highKey(gameId){ return `hp_highscore_${currentUser?.username||'guest'}_${gameId}`; }
+  function getStoredHigh(gameId){ const v = localStorage.getItem(highKey(gameId)); return v? Number(v): null; }
+  function updateHighIfNeeded(gameId, score){
+    if(score == null) return getStoredHigh(gameId) ?? score ?? 0;
+    const prev = getStoredHigh(gameId) ?? 0;
+    if(score > prev){ localStorage.setItem(highKey(gameId), String(score)); return score; }
+    return prev;
+  }
 
 } // end main

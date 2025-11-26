@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><title>Utils Tests</title><style>body{font-family:system-ui;background:#111;color:#eee;padding:20px} .pass{color:#53ff94} .fail{color:#ff2d55}</style></head>
+<body>
+<h1>Utils Tests</h1>
+<pre id="out"></pre>
+<script type="module">
+import { rectsCollide, clamp, randInt } from '../shared/utils.js';
+const out = document.getElementById('out');
+let passed=0, failed=0;
+function test(name, fn){
+  try { fn(); out.innerHTML += `PASS ${name}\n`; passed++; }
+  catch(e){ out.innerHTML += `FAIL ${name}: ${e.message}\n`; failed++; }
+}
+function assert(cond,msg){ if(!cond) throw new Error(msg||'assert failed'); }
+
+// Tests
+test('rectsCollide overlapping',()=>{
+  assert(rectsCollide({x:0,y:0,w:10,h:10},{x:5,y:5,w:10,h:10})===true,'should collide');
+});
+
+test('rectsCollide separated',()=>{
+  assert(rectsCollide({x:0,y:0,w:10,h:10},{x:20,y:20,w:5,h:5})===false,'should not collide');
+});
+
+test('clamp inside',()=>{ assert(clamp(5,0,10)===5,'value'); });
+
+test('clamp below',()=>{ assert(clamp(-2,0,10)===0,'below'); });
+
+test('clamp above',()=>{ assert(clamp(20,0,10)===10,'above'); });
+
+test('randInt range',()=>{ const r=randInt(1,3); assert(r>=1 && r<=3,'range'); });
+
+out.innerHTML += `\nSummary: ${passed} passed, ${failed} failed`; if(failed===0) out.className='pass'; else out.className='fail';
+</script>
+</body>
+</html>

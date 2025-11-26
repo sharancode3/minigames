@@ -3,48 +3,104 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Game Portal — Play, Compete, Progress</title>
-  <link rel="stylesheet" href="./portal.style.css">
+  <title>Hyper Plays 2.0 • Mini Gaming Hub</title>
+  <meta name="description" content="Hyper Plays — a playful hub for instant browser games." />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
-  <div class="floating-orb orb-one"></div>
-  <div class="floating-orb orb-two"></div>
-
-  <div class="page-shell">
-    <header class="header">
-      <div class="brand">
-        <div class="logo-mark">GP</div>
-        <div>
-          <div class="title">Game Portal</div>
-          <div class="subtitle">Arcade cloud for modern teams.</div>
+  <div class="nebula" aria-hidden="true">
+    <span class="orb orb-one"></span>
+    <span class="orb orb-two"></span>
+    <span class="orb orb-three"></span>
+  </div>
+  <div class="shell">
+    <header class="hero" id="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Hyper Plays 2.0</p>
+        <h1>Arcade energy, zero loading screens.</h1>
+        <p class="lede">Curated browser games with instant launch, synced scores, and a gamer HUD that follows you everywhere.</p>
+        <div class="hero-actions">
+          <button id="startBtn" class="btn solid">Play Instantly</button>
+          <button id="heroPortal" class="btn outline">Open Game Portal</button>
+          <button id="themeToggle" class="btn minimal" aria-label="Toggle theme">Switch Theme</button>
+          <button id="soundToggle" class="btn minimal" aria-label="Toggle click sounds">Sound: Off</button>
+        </div>
+        <div class="hero-metrics">
+          <div>
+            <span>12</span>
+            <p>Playable demos, live HUD controls</p>
+          </div>
+          <div>
+            <span>+1.4k</span>
+            <p>Sessions logged this month</p>
+          </div>
+          <div>
+            <span>Word Pulse</span>
+            <p>Fresh drop • Puzzle</p>
+          </div>
         </div>
       </div>
-
-      <div class="controls">
-        <div class="search-wrap"><input id="search" placeholder="Search games, tags, moods..." /></div>
-        <div class="profile">
-          <a class="nav-link" href="about.html">About</a>
-          <span id="username" class="username-pill"></span>
-          <button id="logoutBtn" class="ghost-btn" title="Logout">Logout</button>
-          <button id="themeToggle" class="theme-toggle" title="Change Theme">Theme</button>
+      <div class="hero-panel">
+        <div class="panel-card">
+          <p class="panel-eyebrow">Live queue</p>
+          <h3>Tonight's playlist</h3>
+          <ul>
+            <li><span>Neon Serpent</span><span>Arcade</span></li>
+            <li><span>Turbo Drift</span><span>Racing</span></li>
+            <li><span>Word Pulse</span><span>Puzzle</span></li>
+          </ul>
+        </div>
+        <div class="panel-card highlight">
+          <p class="panel-eyebrow">HUD perks</p>
+          <h3>Pause, replay, home, score — everywhere.</h3>
+          <p>Launch any title and the gamer HUD slides in with high scores, pause/resume, replay, and a home exit without losing momentum.</p>
         </div>
       </div>
     </header>
 
-    <!-- Simplified efficient layout: direct grid focus -->
-    <main class="grid" id="grid" role="main" aria-live="polite"></main>
+    <section class="pill-rail" aria-label="Game categories">
+      <button class="pill active" data-filter="all">All</button>
+      <button class="pill" data-filter="arcade">Arcade</button>
+      <button class="pill" data-filter="puzzle">Puzzle</button>
+      <button class="pill" data-filter="racing">Racing</button>
+      <button class="pill" data-filter="skill">Skill</button>
+      <button class="pill" data-filter="retro">Retro</button>
+      <span class="rail-indicator" aria-hidden="true"></span>
+    </section>
 
-    <!-- Fullscreen game container injected dynamically -->
-    <div id="fsGame" class="fs-game" aria-hidden="true"></div>
+    <section class="featured" aria-label="Spotlight games">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Spotlight Stack</p>
+          <h2>Curated nightly drops</h2>
+        </div>
+        <div class="head-actions">
+          <button class="chip" data-chip="trending">Trending</button>
+          <button class="chip" data-chip="new">New</button>
+          <button class="chip" data-chip="calm">Chill</button>
+        </div>
+      </div>
+      <div class="feature-row" id="featuredRow"></div>
+    </section>
 
-    <footer class="footer"><div class="footer-wave"></div><small>© 2025 Game Portal Studio • Crafted with GPT-5.1-Codex (Preview)</small></footer>
+    <section class="grid-section" id="games">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Game Library</p>
+          <h2>Fresh drops & cult favorites</h2>
+        </div>
+        <div class="head-actions">
+          <button id="shuffleBtn" class="btn ghost">Shuffle Deck</button>
+        </div>
+      </div>
+      <div class="grid" id="gameGrid"></div>
+    </section>
+
+    <footer class="footer">
+      <small>© 2025 Hyper Plays • A playful experiment by the Hyper Plays crew.</small>
+    </footer>
   </div>
-
-  <!-- legacy modal & mini-player removed for streamlined fullscreen experience -->
-
-  <script defer src="./portal.app.js"></script>
-  <noscript><div style="padding:20px;text-align:center;color:#ffdede;">Enable JS.</div></noscript>
+  <script src="script.js" type="module"></script>
 </body>
 </html>

@@ -1,70 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Game Portal</title>
-  <link rel="stylesheet" href="login.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyper Plays • Sign In</title>
+  <link rel="stylesheet" href="login.css" />
 </head>
 <body>
-  <div class="bg-canvas"></div>
-  
-  <div class="login-container">
-    <div class="login-card">
-      <div class="logo-section">
-        <div class="logo-icon">GP</div>
-        <h1>Game Portal</h1>
-        <p class="tagline">Play. Compete. Progress.</p>
+  <div class="aurora" aria-hidden="true">
+    <span class="orb orb-one"></span>
+    <span class="orb orb-two"></span>
+  </div>
+  <main class="auth-shell">
+    <section class="auth-hero">
+      <div class="badge">Hyper Plays Portal</div>
+      <h1>Log in to sync your HUD, highscores, and streaks.</h1>
+      <p>One login keeps your pause/resume state, Word Pulse streaks, and arcade progress aligned across every device.</p>
+      <ul>
+        <li>Unified gamer HUD across all games</li>
+        <li>Word Pulse streak + hint tracking</li>
+        <li>Offline-friendly fallback signup</li>
+      </ul>
+      <a class="link-chip" href="register.html">Need the full register flow? Jump there ↗</a>
+    </section>
+    <section class="auth-panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Account access</p>
+          <h2>Welcome back</h2>
+        </div>
+        <button id="guestBtn" class="ghost">Guest Mode</button>
       </div>
-
       <div class="tabs">
         <button class="tab active" data-tab="login">Login</button>
         <button class="tab" data-tab="signup">Sign Up</button>
       </div>
 
-      <!-- Login Form -->
       <form id="loginForm" class="form active">
         <div class="form-group">
           <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" required placeholder="your@email.com">
+          <input type="email" id="loginEmail" required placeholder="pilot@hyperplays.dev" />
         </div>
         <div class="form-group">
           <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" required placeholder="••••••••">
+          <input type="password" id="loginPassword" required placeholder="••••••••" />
         </div>
-        <button type="submit" class="btn-primary">Login</button>
+        <button type="submit" class="btn-primary">Login & Play</button>
         <div class="error-message" id="loginError"></div>
       </form>
 
-      <!-- Signup Form -->
       <form id="signupForm" class="form">
-        <div class="form-group">
-          <label for="signupUsername">Username</label>
-          <input type="text" id="signupUsername" required placeholder="Choose a username">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="signupUsername">Username</label>
+            <input type="text" id="signupUsername" required placeholder="Player handle" />
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" required placeholder="you@email.com" />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="signupEmail">Email</label>
-          <input type="email" id="signupEmail" required placeholder="your@email.com">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" required placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label for="signupConfirm">Confirm Password</label>
+            <input type="password" id="signupConfirm" required placeholder="••••••••" />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" required placeholder="••••••••">
-        </div>
-        <div class="form-group">
-          <label for="signupConfirm">Confirm Password</label>
-          <input type="password" id="signupConfirm" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn-primary">Create Account</button>
+        <button type="submit" class="btn-primary">Create account</button>
         <div class="error-message" id="signupError"></div>
       </form>
 
-      <div class="guest-section">
-        <div class="divider">or</div>
-        <button id="guestBtn" class="btn-secondary">Continue as Guest</button>
+      <div class="panel-foot">
+        <p>Need help? <a href="mailto:team@hyperplays.dev">team@hyperplays.dev</a></p>
+        <p class="tiny">Offline fallback automatically stores a safe local user if the API is unreachable.</p>
       </div>
-    </div>
-  </div>
-
+    </section>
+  </main>
   <script src="login.js"></script>
 </body>
 </html>

@@ -1,5 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+// simple sound effects via Web Audio
+const AudioCtx = window.AudioContext||window.webkitAudioContext; const audioCtx = new AudioCtx();
+function fx(freq=440,type='sine',dur=.12,vol=.15){const o=audioCtx.createOscillator();const g=audioCtx.createGain();o.type=type;o.frequency.value=freq;o.connect(g);g.connect(audioCtx.destination);g.gain.value=vol;o.start();o.stop(audioCtx.currentTime+dur);} 
 
 const box = 20; // size of cell
 let snake = [{ x: 10 * box, y: 10 * box }];
@@ -83,6 +86,7 @@ function draw() {
   if (snakeX === food.x && snakeY === food.y) {
     score++;
     food = randomFood();
+    fx(640,'square',.07,.2);
   } else {
     snake.pop(); // remove tail
   }
@@ -109,6 +113,7 @@ function endGame() {
   document.getElementById('restartBtn').addEventListener('click', restart);
   // notify parent
   try { window.parent.postMessage({ type:'game_over', gameId:'snake', result:'lost', score }, '*'); } catch(e) {}
+  fx(120,'sawtooth',.4,.25);
 }
 
 function restart(){

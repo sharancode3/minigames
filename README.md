@@ -105,7 +105,7 @@ game-portal/
 - Progress won't be saved to server
 - Local storage will be used instead
 
-## 🔧 Configuration
+## � Configuration
 
 ### Backend Settings
 
@@ -175,7 +175,7 @@ Edit CSS variables in `portal.style.css`:
 - `GET /api/progress` - Get all user progress
 - `GET /api/leaderboard/:gameId` - Get game leaderboard
 
-## 🔐 Security Notes
+## � Security Notes
 
 ⚠️ **Important for Production:**
 - Change the `JWT_SECRET` in `.env`
@@ -210,7 +210,7 @@ This project is open source and available for personal and educational use.
 
 Feel free to add more games or improve existing features!
 
-## 📧 Support
+## � Support
 
 For issues or questions, check the browser console for error messages.
 
